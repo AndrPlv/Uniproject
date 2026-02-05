@@ -18,15 +18,10 @@ void setup() {
   pinMode(4, INPUT_PULLUP);
   pinMode(5, OUTPUT);
   Serial.begin(9600);
-<<<<<<< HEAD
-=======
-  digitalWrite(11, HIGH);
->>>>>>> 86035b7de6ac025b2aa9cb0fcc057425fe40f426
   lcd.init();
   lcd.backlight();
 }
 
-<<<<<<< HEAD
 void lcd_print(int t,int h){
   lcd.clear();
   
@@ -39,31 +34,6 @@ void lcd_print(int t,int h){
   lcd.print(t);
   lcd.setCursor(10, 1);
   lcd.print(h);  
-=======
-void lcd_print(int t,int h, bool link){
-  lcd.clear();
-  
-  lcd.setCursor(0, 0);
-  lcd.print("Tem:");
-  lcd.setCursor(9, 0);
-  lcd.print("Hum:");
-
-  lcd.setCursor(5, 0);
-  lcd.print(t);
-  lcd.setCursor(14, 0);
-  lcd.print(h);  
-
-  lcd.setCursor(1,1);
-  lcd.print("Link:");
-  if (link) {
-    lcd.setCursor(7,1);
-    lcd.print("Wi-fi");
-  }
-  else {
-    lcd.setCursor(7,1);
-    lcd.print("COM-PORT");
-  }
->>>>>>> 86035b7de6ac025b2aa9cb0fcc057425fe40f426
   
   
   
