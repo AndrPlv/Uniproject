@@ -1,6 +1,8 @@
 import serial.tools.list_ports 
 import serial
+import requests
 from time import perf_counter
+
 
 def logger(func):
     def timework(*args):
@@ -16,13 +18,12 @@ def port():
     for j in ports:
         ser.append(j.name)
     return ser
-@logger
 def link(COMPORT: str, values: int):
     ser = serial.Serial(COMPORT, 9600)
-    DATE = []
     for _ in range(values):
         inp = str(ser.readline(), 'utf-8').strip().split(',')
-        DATE.append([inp[0],inp[1],'xx:xx:xx'])
+        data = {'tepm': inp[0], 'hum': inp}
+        response = requests.post('http://192.168.0.104:5000/input', json=data)
+        print(f"Статус: {response.status_code}")
+        print(f"Ответ: {response.text}")
     ser.close()
-    return DATE
-print(link('COM4', 5))
