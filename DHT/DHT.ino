@@ -6,41 +6,41 @@
 #include <Wire.h>
 #include <DHT.h>
 
-// ТОЛЬКО ЭТУ СТРОЧКУ ПОМЕНЯЛ: D4 = GPIO2 (было 13, теперь 2)
+
 #define DHTPIN 14        
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 DHT dht(DHTPIN, DHT22);
 
-const char* ssid = "Tenda_CBE978";     // Wi-Fi имя
-const char* password = "Andrey0410";  // пароль
-
+const char* ssid = "Tenda_CBE978";     
+const char* password = "Andrey0410";  
 void setup() {
-  // ПОМЕНЯЛ: D4 = GPIO2 для светодиода (было 13, теперь 2)
   pinMode(2, OUTPUT);     
   Serial.begin(115200);
   dht.begin();
   lcd.init();
-  lcd.backlight();
-  WiFi.begin(ssid, password);
+  lcd.backlight(); 
+  int test = 0;
+  while(test<30) {
+      WiFi.begin(ssid, password);  
+      test ++;        
+  }
 }
 
 void loop() {
-  digitalWrite(2, HIGH);  // И тут поменял на 2
+  digitalWrite(2, HIGH); 
   delay(500);
   
   float h = dht.readHumidity();
   float t = dht.readTemperature();
-  lcd_print(t, h);
-  delay(50);
+  int result = send_value(t,h);
+  lcd_print(t,h,result);
 
-  send_value(t,h);
-
-  digitalWrite(2, LOW);   // И тут поменял на 2
+  digitalWrite(2, LOW);   
   delay(500);
 }
 
-void lcd_print(int t, int h) {
+void lcd_print(int t, int h, int result) {
   lcd.clear();
 
   lcd.setCursor(0, 0);
@@ -73,36 +73,40 @@ void lcd_print(int t, int h) {
   lcd.print("Client");
   lcd.setCursor(10, 1);
   lcd.print("Server");
-  int status = WiFi.status();
   lcd.setCursor(6, 1);
-  if (status == WL_CONNECTED) {
-    lcd.print(">>>>");
+
+  int status = WiFi.status();
+  if (status==1) {
+    lcd.print("????");                
   }
-  else if (status == WL_CONNECT_FAILED) {    
-    lcd.print(">!!>");
+  else if (status==6) {
+    lcd.print("....");
   }
-  else if (status == WL_CONNECTION_LOST) {
-    lcd.print("><>>");
+  else {
+    if (result==200) {
+      lcd.print(">>>>");
+    }
+    else if (result==400) {
+      lcd.print(">??>");
+    } 
+    else if (result==500) {
+      lcd.print(">||>");
+    }
   }
-  else if (status == WL_DISCONNECTED) {
-    lcd.print(">||>");
-  }  
 } 
-void send_value(float tem, float hum) {
+int send_value(float tem, float hum) {
   
-  StaticJsonDocument<200> doc;  // 200 байт — достаточно для наших данных
+  StaticJsonDocument<200> doc;
     
-  doc["temperature"] = tem;
-  doc["humidity"] = hum;
-  doc["key"] = "password";
+  doc["tem"] = tem;
+  doc["hum"] = hum;
   WiFiClient client;
   HTTPClient http;  
   String jsonString;
   serializeJson(doc, jsonString);  
-  http.begin(client, "http://192.168.0.104:5000/");
+  http.begin(client, "http://192.168.0.104:5000/input");
   http.addHeader("Content-Type", "application/json");  
 
   int result = http.POST(jsonString);
-  Serial.print("Ответ: ");
-  Serial.println(result);    
+  return result;
 }
