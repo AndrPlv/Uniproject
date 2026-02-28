@@ -1,16 +1,18 @@
 from flask import Flask, render_template, request
-import datetime
+import pandas as pd
 
 app = Flask(__name__)
 
 @app.route('/input', methods=['POST'])
 def handle_data():
   data = request.get_json()
+  print(type(data))
   print(data)
-  with open('value.txt', 'a') as file:
-      file.write(f't: {data['tem']}, h: {data['hum']}\n')
+  dase = pd.read_csv("DataSet.csv", delimiter=";")
+  dase.loc[len(dase)] = data
+  dase.to_csv("DataSet.csv", index=False, sep=";")
   
-  return {'code': 200, "time": datetime.datetime.now()}
+  return {'code': 200}
 @app.route('/<CODE_DEVISE>')
 def main(CODE_DEVISE): 
   return render_template('index.html', title=CODE_DEVISE)
