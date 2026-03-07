@@ -1,17 +1,74 @@
 <!doctype html>
 <html>
     <head>
-        <title>{{ title }}</title>        
-        <meta http-equiv="refresh" content="5">
-    </head>
-    <body style="background-color: rgb(154, 201, 179); text-align: center;">
-        <p><h1>Проект "Метеостанция"</h1></p>
-        <div>
-            {{  info|safe  }}
-        </div>
-        <div style="position: absolute; top: 5%; left: 75%; size:  5px;">
-            {{ now_time }}
-        </div>
-        
+        <title>Моя метеостанция</title>
+        <script src="https://cdn.plot.ly/plotly-3.4.0.min.js"></script>
+        <script>
+            async function updateData() {
+                const response = await fetch('/update');
+                const data = await response.json();
+                
+                console.log("NEW DATA");
+                // Температура
+                Plotly.react('Temgraph', [{
+                    x: data.Time,
+                    y: data.Temperature,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Температура',
+                    line: {color: 'red'}
+                }]);
+                
+                // Влажность
+                Plotly.react('Humgraph', [{
+                    x: data.Time,
+                    y: data.Humidity,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Влажность',
+                    line: {color: 'blue'}
+                }]);
+
+                document.getElementById('Table').innerHTML = data.Table;
+                setTimeout(updateData, 5000);
+            }
+            updateData();
+        </script>
+        <style>
+        * {
+            margin: 0;        
+            padding: 0;   
+            box-sizing: border-box;  
+        }
+        body {
+            background-color: rgb(131, 170, 207);
+            text-align: center;
+        }
+        body .box {
+            background-color: white;
+            border: 5px solid rgb(109, 141, 172);
+            border-radius: 10px;
+            display: inline-block;
+        }
+        body .button {
+            position: absolute; left: 90%; top: 1%;
+        }
+        body .table {
+            position: absolute; left: 0%; top: 10%;
+        }
+        body .graphTem {
+            position: absolute; left: 0%; top: 60%;
+        }
+        body .graphHum {
+            position: absolute; left: 50%; top: 60%;
+        }       
+        </style>
+        </head>
+    <body>
+        <h1 class="box">Моя метеостанция</h1>
+
+        <div class="box table" id="Table">{{ table|safe }}</div>
+        <div class="box graphTem" id="Temgraph">{{ Temgrapch|safe }}</div>
+        <div class="box graphHum" id="Humgraph">{{ Humgrapch|safe }}</div>        
     </body>
 </html>
