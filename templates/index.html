@@ -44,28 +44,30 @@
             background-color: rgb(131, 170, 207);
             text-align: center;
         }
-        body .box {
+        title {
             background-color: white;
-            border: 5px solid rgb(109, 141, 172);
+            border: 15px solid white;
             border-radius: 10px;
-            display: inline-block;
+            padding: 5px;
         }
-        body .button {
-            position: absolute; left: 90%; top: 1%;
+        body .box {
+            background-color: rgb(202, 209, 245);
+            border: 10px solid rgb(100, 100, 255);
+            border-radius: 5px;
         }
         body .table {
-            position: absolute; left: 0%; top: 10%;
+            position: absolute; left: 0px; top: 50px;
         }
         body .graphTem {
-            position: absolute; left: 0%; top: 60%;
+            position: absolute; left: 0px; top: 500px;
         }
         body .graphHum {
-            position: absolute; left: 50%; top: 60%;
+            position: absolute; left: 750px; top: 500px;
         }       
         </style>
         </head>
     <body>
-        <h1 class="box">Моя метеостанция</h1>
+        <h1 class="title">Моя метеостанция</h1>
 
         <div class="box table" id="Table">{{ table|safe }}</div>
         <div class="box graphTem" id="Temgraph">{{ Temgrapch|safe }}</div>
