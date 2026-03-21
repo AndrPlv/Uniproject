@@ -102,9 +102,10 @@ int send_value(float tem, float hum) {
     }
   }
 
-  StaticJsonDocument<300> doc;
+  StaticJsonDocument<400> doc;
 
-  doc["stID"] = myname;
+  doc["MacAdress"] = WiFi.macAddress();
+  doc["NameSTA"] = myname;
   doc["Time"] = NTP.toString();
   doc["Temperature"] = tem;
   doc["Humidity"] = hum;

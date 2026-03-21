@@ -10,13 +10,10 @@ def handle_data():
   data = request.get_json()
 
   if None in [data[j] for j in data.keys()]:
-    print("None!")
     return {'code': 0}
   else:
-    data["Time"] = pd.to_datetime(data["Time"], format="%d.%m.%Y %H:%M:%S")
-    dase = pd.read_csv("DataSet.csv", delimiter=";")
-    dase.loc[len(dase)] = data
-    dase.to_csv("DataSet.csv", index=False, sep=";")
+    analitic.lists_STA(data)
+    analitic.smart_save(data)
   
   return {'code': 200}
 @app.route('/update')

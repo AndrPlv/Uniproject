@@ -1,12 +1,11 @@
 import plotly.graph_objects as go
-import plotly.express as px
 import pandas as pd
+
 
 def table(name: str, n=-15, delimiter=";"):
   base = pd.read_csv(name, delimiter=delimiter)
   table = base[n:]
   print(table)
-
 def graph(name: str, y, n=-15, line_name=";", delimiter=";"):
     base = pd.read_csv(name, delimiter=delimiter)
 
@@ -21,3 +20,25 @@ def graph(name: str, y, n=-15, line_name=";", delimiter=";"):
     ))
 
     return graphs.to_html(full_html=False, include_plotlyjs=False)
+
+def lists_STA(pack: dict):
+  DataSet_operator = pd.read_csv("DataSets\STAes_list.csv", delimiter=";")
+  try:
+    if pack["NameSTA"] != DataSet_operator[DataSet_operator["MacAdress"] == pack["MacAdress"]]["NameSTA"].values[0]:
+        mask = DataSet_operator["MacAdress"] == pack["MacAdress"]
+        DataSet_operator.loc[mask, "NameSTA"] = pack["NameSTA"]
+  except:
+    DataSet_operator.loc[len(DataSet_operator)] = {"MacAdress": pack["MacAdress"], "NameSTA": pack["NameSTA"], "FileName": pack["NameSTA"]}
+    DataSet_STA = pd.DataFrame(columns=['Time', 'Temperature', 'Humidity'])
+    DataSet_STA.to_csv(f'DataSets/{pack["NameSTA"]}.csv', index=False, sep=";")
+  finally:
+    DataSet_operator.to_csv("DataSets/STAes_list.csv", index=False, sep=";")    
+def smart_save(pack: dict):
+  DataSet_operator = pd.read_csv("DataSets\STAes_list.csv", delimiter=";")
+  working_fail = DataSet_operator[DataSet_operator["MacAdress"] == pack["MacAdress"]]["FileName"].values[0]
+
+  DataSet_STA = pd.read_csv(f"DataSets\{working_fail}.csv", delimiter=";")
+  DataSet_STA.loc[len(DataSet_STA)] = {"Time": pd.to_datetime(pack["Time"]),
+                                       "Temperature": pack["Temperature"],
+                                       "Humidity": pack["Humidity"]}
+  DataSet_STA.to_csv(f"DataSets\{working_fail}.csv", index=False, sep=";")
