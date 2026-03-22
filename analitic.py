@@ -28,11 +28,12 @@ def lists_STA(pack: dict):
         mask = DataSet_operator["MacAdress"] == pack["MacAdress"]
         DataSet_operator.loc[mask, "NameSTA"] = pack["NameSTA"]
   except:
-    DataSet_operator.loc[len(DataSet_operator)] = {"MacAdress": pack["MacAdress"], "NameSTA": pack["NameSTA"], "FileName": pack["NameSTA"]}
+    DataSet_operator.loc[len(DataSet_operator)] = {"MacAdress": pack["MacAdress"], "NameSTA": pack["NameSTA"], "FileName": f'{pack["NameSTA"]}'}
     DataSet_STA = pd.DataFrame(columns=['Time', 'Temperature', 'Humidity'])
     DataSet_STA.to_csv(f'DataSets/{pack["NameSTA"]}.csv', index=False, sep=";")
   finally:
     DataSet_operator.to_csv("DataSets/STAes_list.csv", index=False, sep=";")    
+
 def smart_save(pack: dict):
   DataSet_operator = pd.read_csv("DataSets\STAes_list.csv", delimiter=";")
   working_fail = DataSet_operator[DataSet_operator["MacAdress"] == pack["MacAdress"]]["FileName"].values[0]

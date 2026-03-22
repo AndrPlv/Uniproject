@@ -15,8 +15,8 @@ DHT dht(DHTPIN, DHT22);
 
 String myname = "STA1";
 int sleep = 1000;
-String ssid = "Tenda_CBE978";
-String password = "Andrey0410";
+String ssid = "realme Note 60x";
+String password = "#ANDRE#WIFI#+1660";
 void setup() {
   pinMode(2, OUTPUT);
   Serial.begin(115200);
@@ -114,7 +114,7 @@ int send_value(float tem, float hum) {
   HTTPClient http;
   String jsonString;
   serializeJson(doc, jsonString);
-  http.begin(client, "http://192.168.0.104:5000/input");
+  http.begin(client, "http://10.179.199.1:5000/input");
   http.addHeader("Content-Type", "application/json");
 
   int result = http.POST(jsonString);
