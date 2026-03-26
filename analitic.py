@@ -4,9 +4,9 @@ import pandas as pd
 
 def table(name: str, n=-15, delimiter=";"):
   base = pd.read_csv(name, delimiter=delimiter)
-  table = base[n:]
-  print(table)
-def graph(name: str, y, n=-15, line_name=";", delimiter=";"):
+  return base[n:].to_html(index=False)
+
+def graph(name: str, y: str, line_name=";", delimiter=";"):
     base = pd.read_csv(name, delimiter=delimiter)
 
     time = pd.to_datetime(base["Time"], format="%Y-%m-%d %H:%M:%S").dt.strftime("%H:%M:%S")
@@ -20,7 +20,6 @@ def graph(name: str, y, n=-15, line_name=";", delimiter=";"):
     ))
 
     return graphs.to_html(full_html=False, include_plotlyjs=False)
-
 def lists_STA(pack: dict):
   DataSet_operator = pd.read_csv("DataSets\STAes_list.csv", delimiter=";")
   try:
@@ -32,8 +31,7 @@ def lists_STA(pack: dict):
     DataSet_STA = pd.DataFrame(columns=['Time', 'Temperature', 'Humidity'])
     DataSet_STA.to_csv(f'DataSets/{pack["NameSTA"]}.csv', index=False, sep=";")
   finally:
-    DataSet_operator.to_csv("DataSets/STAes_list.csv", index=False, sep=";")    
-
+    DataSet_operator.to_csv("DataSets/STAes_list.csv", index=False, sep=";") 
 def smart_save(pack: dict):
   DataSet_operator = pd.read_csv("DataSets\STAes_list.csv", delimiter=";")
   working_fail = DataSet_operator[DataSet_operator["MacAdress"] == pack["MacAdress"]]["FileName"].values[0]
@@ -43,3 +41,10 @@ def smart_save(pack: dict):
                                        "Temperature": pack["Temperature"],
                                        "Humidity": pack["Humidity"]}
   DataSet_STA.to_csv(f"DataSets\{working_fail}.csv", index=False, sep=";")
+def name_fail_DATASET(NameSTA: str):
+  disp = pd.read_csv("DataSets/STAes_list.csv", delimiter=";")
+  try:
+    fail_work = f'{disp[disp["NameSTA"] == NameSTA]["FileName"].values[0]}.csv'
+    return f'DataSets/{fail_work}'
+  except:
+    return None

@@ -5,13 +5,14 @@
         <script src="https://cdn.plot.ly/plotly-3.4.0.min.js"></script>
         <script>
             async function updateData() {
-                const response = await fetch('/update');
+                const adress = '/update' + window.location.pathname;
+                const response = await fetch(adress);
                 const data = await response.json();
                 
                 console.log("NEW DATA");
                 // Температура
                 Plotly.react('Temgraph', [{
-                    x: data.Time,
+                   x: data.Time,
                     y: data.Temperature,
                     type: 'scatter',
                     mode: 'lines',
@@ -67,10 +68,10 @@
         </style>
         </head>
     <body>
-        <h1 class="title">Моя метеостанция</h1>
+        <h1 class="title">Метеостанция {{NameSTA|safe}}</h1>
 
-        <div class="box table" id="Table">{{ table|safe }}</div>
+        <div class="box table" id="Table">{{ table|safe }}</div>        
         <div class="box graphTem" id="Temgraph">{{ Temgrapch|safe }}</div>
-        <div class="box graphHum" id="Humgraph">{{ Humgrapch|safe }}</div>        
+        <div class="box graphHum" id="Humgraph">{{ Humgrapch|safe }}</div>
     </body>
 </html>
